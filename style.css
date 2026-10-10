@@ -1,0 +1,170 @@
+/* ---------- Palette ---------- */
+:root {
+  --cream: #fff1df;
+  --rose: #d78d88;
+  --wine: #843d49;
+  --gold: #e7c99a;
+  --night: #222b49;
+  --moon: min(34dvh, 64vw);   /* taille de la lune */
+  --halo: 0.25;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; background: var(--night); }
+body {
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  color: var(--wine);
+}
+
+/* ---------- Paysage ---------- */
+.journey { position: fixed; inset: 0; overflow: hidden; }
+
+.sky {
+  position: absolute; left: 0; bottom: 0; width: 100%; height: 300%;
+  background: linear-gradient(to bottom,
+    #1b2240 0%, var(--night) 14%, #4a3a73 38%, #8d5a8c 60%,
+    var(--rose) 82%, #f3c09a 94%, var(--gold) 100%);
+  will-change: transform;
+}
+
+.destination {
+  position: absolute; left: calc(60% - var(--moon) * 0.022); top: calc(47dvh - var(--moon) * 1.0368); /* le dessous du banc reste sur le point de rencontre des fils */
+  width: var(--moon); aspect-ratio: 1;
+  transform: translateX(-50%);
+}
+.destination::before { /* halo de lune */
+  content: ""; position: absolute; inset: -90%;
+  background: radial-gradient(circle, rgba(255,222,165,.5) 0%, rgba(255,222,165,.18) 35%, rgba(255,222,165,0) 65%);
+  mix-blend-mode: screen;
+  opacity: var(--halo);
+}
+.moon { position: absolute; inset: 0; transform-origin: 50% 50%; }
+.moon > svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 0 5px rgba(247,226,180,.65)); }
+
+/* Étoiles : dans la partie nocturne du paysage, générées par script.js */
+.stars { position: absolute; left: 0; top: 0; width: 100%; height: 56%; pointer-events: none; }
+.star {
+  position: absolute; border-radius: 50%; background: #fff6df;
+  box-shadow: 0 0 4px 1px rgba(255,246,223,.55);
+  animation: twinkle var(--dur, 4s) ease-in-out var(--delay, 0s) infinite;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: .2; transform: scale(.7); }
+  50%      { opacity: 1;  transform: scale(1.25); }
+}
+
+/* ---------- Chats sur la lune (fin) ---------- */
+.moon-cats {
+  position: absolute; left: 26.8%; bottom: 9.8%; width: 51.4%;
+  display: flex; align-items: flex-end;
+  opacity: 0; transition: opacity 2.4s ease 2.4s;
+}
+.is-final .moon-cats { opacity: 1; }
+.moon .moon-cat { width: 53.5%; height: auto; aspect-ratio: 61 / 80; overflow: visible; filter: drop-shadow(0 0 2px rgba(255,205,130,.9)); }
+/* Le chat roux est retourné pour que sa queue parte vers l'extérieur */
+.cat-roux { color: #e27d22; transform: scaleX(-1) rotate(-2deg); transform-origin: 50% 100%; }
+.cat-nuit { color: #1b1118; margin-left: -7%; transform: rotate(-2deg); transform-origin: 50% 100%; }
+
+/* ---------- Invocation finale (premier plan) ----------
+   Mobile : sous la lune, centrée. Écran large : à gauche du croissant. */
+.invocation {
+  position: absolute; z-index: 3; left: 0; width: 100%; top: 51dvh; padding: 0 8%;
+  text-align: center; color: var(--cream);
+  opacity: 0; transition: opacity 2.8s ease 1.4s; pointer-events: none;
+}
+.invocation::before { /* voile sombre très doux pour garder le texte lisible */
+  content: ""; position: absolute; inset: -12% -4%; z-index: -1;
+  background: radial-gradient(ellipse at center, rgba(27,34,64,.8) 0%, rgba(27,34,64,0) 70%);
+}
+.is-final .invocation { opacity: 1; }
+.dua-ar {
+  margin: 0; font-family: "Amiri", "Scheherazade New", "Traditional Arabic", serif;
+  font-size: clamp(1.6rem, 4dvh, 2.4rem); line-height: 1.9; color: var(--gold);
+  text-shadow: 0 0 10px rgba(231,201,154,.5), 0 0 24px rgba(247,226,180,.3);
+}
+.dua-line { display: block; width: 56px; height: 1px; margin: .6rem auto; background: var(--gold); opacity: .75; }
+.dua-fr { margin: 0; font-style: italic; font-size: clamp(1.1rem, 2.6dvh, 1.4rem); line-height: 1.4; text-shadow: 0 0 10px rgba(27,34,64,.9); }
+.dua-mark { margin: .5rem 0 0; font-size: 1.05rem; opacity: .85; }
+
+@media (min-width: 760px) and (min-aspect-ratio: 1/1) {
+  .invocation {
+    left: auto; top: 26dvh; width: min(420px, 34%); padding: 0; text-align: right;
+    right: calc(40% + var(--moon) * 0.43 + 1.5rem);
+  }
+  .dua-line { margin-left: auto; margin-right: 0; }
+}
+
+/* Carte finale compacte pour laisser la place à l'image */
+.is-final .question-card { padding: 1rem 1.3rem 1.1rem; z-index: 2; }
+.is-final .question-card p { font-size: 1.05rem; margin-bottom: .4rem; }
+
+.paths { position: absolute; inset: 0; width: 100%; height: 100%; }
+.paths path {
+  fill: none; stroke-width: 2; stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.path-left  { stroke: #c94f60; filter: drop-shadow(0 0 3px rgba(201,79,96,.55)); }
+.path-right { stroke: #e18b8c; filter: drop-shadow(0 0 3px rgba(225,139,140,.55)); }
+
+.hills { position: absolute; left: 0; bottom: 0; width: 100%; height: 6%; }
+
+.starting-point { position: absolute; left: 0; bottom: 0; width: 100%; height: 0; }
+.cat {
+  position: absolute; bottom: 2.4dvh; /* repose sur la colline */
+  width: clamp(44px, 9dvh, 70px); aspect-ratio: 64 / 56;
+  fill: #261630; transform: translateX(-50%);
+}
+.cat-left  { left: 26%; fill: #d9822b; } /* le chat roux */
+.cat-right { left: 74%; transform: translateX(-50%) scaleX(-1); }
+
+.footer-note {
+  position: absolute; top: max(14px, env(safe-area-inset-top)); left: 0; right: 0;
+  margin: 0; text-align: center; font-style: italic; font-size: .95rem;
+  color: rgba(255,241,223,.6); pointer-events: none;
+}
+
+/* ---------- Carte ---------- */
+.question-card {
+  position: absolute; left: 50%; bottom: max(16px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 2; width: min(92vw, 460px); max-height: 56dvh; overflow-y: auto;
+  padding: 1.5rem 1.5rem 1.6rem;
+  background: var(--cream); color: var(--wine);
+  border-radius: 18px;
+  box-shadow: 0 10px 40px rgba(34,43,73,.35);
+  text-align: center; line-height: 1.4;
+}
+.question-card h1, .question-card h2 { margin: 0 0 .6rem; font-weight: 600; font-size: 1.55rem; }
+.question-card p { margin: 0 0 .8rem; font-size: 1.15rem; }
+.question-card .kicker { font-style: italic; color: var(--rose); font-size: 1.05rem; }
+.question-card .question { font-weight: 600; font-size: 1.3rem; }
+.question-card .reaction { font-style: italic; }
+
+.fade-out { opacity: 0; transform: translate(-50%, 8px); transition: opacity .45s ease, transform .45s ease; }
+.fade-in  { animation: rise .7s ease both; }
+@keyframes rise {
+  from { opacity: 0; transform: translate(-50%, 14px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ---------- Boutons ---------- */
+.answer-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; margin-top: .4rem; }
+.answer {
+  font: inherit; font-size: 1.1rem; font-weight: 600;
+  padding: .6rem 1.2rem; border-radius: 999px; cursor: pointer;
+  border: 1.5px solid var(--wine); background: transparent; color: var(--wine);
+  transition: background .25s, color .25s;
+}
+.answer.yes { background: var(--wine); color: var(--cream); }
+.answer.yes:hover { background: #6c2f3b; }
+.answer.no:hover { background: rgba(132,61,73,.1); }
+.answer:focus-visible { outline: 3px solid var(--night); outline-offset: 3px; }
+.answer:disabled { opacity: .55; cursor: default; }
+
+/* ---------- Mouvement réduit ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .fade-in { animation: none; }
+  .star { animation: none; opacity: .7; }
+  .invocation, .moon-cats { transition: none; }
+  .fade-out, .answer { transition: none; }
+}
